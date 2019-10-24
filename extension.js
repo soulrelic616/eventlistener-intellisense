@@ -104,10 +104,10 @@ function activate(context) {
 
 	//var quoteMark = new RegExp(/["\']/g);
 
-	function loopListeners(){
-		eventListeners.forEach(function(item, index){
+	function loopListeners() {
+		eventListeners.forEach(function (item, index) {
 			//console.log(item);
-			CompletionItem = new vscode.CompletionItem(item, vscode.CompletionItemKind.Class);
+			CompletionItem = new vscode.CompletionItem(item, vscode.CompletionItemKind.Event);
 			CompletionItems.push(CompletionItem);
 
 			//console.log(CompletionItems)
@@ -116,24 +116,6 @@ function activate(context) {
 
 	loopListeners();
 
-
-	var quoteMark;
-
-	vscode.workspace.onDidChangeTextDocument(changeEvent => {
-		for (const change of changeEvent.contentChanges) {
-			 //console.log(change.range); // range of text being replaced
-			 //console.log(change.text); // text replacement
-
-			if(change.text == '"'){
-				quoteMark = '"';
-			} else if (change.text == "'"){
-				quoteMark = "'";
-			} else{
-				quoteMark = undefined;
-			}
-			console.log(quoteMark);
-		}
-   });
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
@@ -152,42 +134,58 @@ function activate(context) {
 	//Maybe list classes in array here?
 	let provider1 = vscode.languages.registerCompletionItemProvider('javascript', {
 
-        provideCompletionItems(document, position, token, context) {
-            
-            const commitCharacterCompletion = new vscode.CompletionItem("on(");
-            commitCharacterCompletion.commitCharacters = ["'"];
-            commitCharacterCompletion.documentation = new vscode.MarkdownString("Press `'` to get `lol`");
-            // a completion item that retriggers IntelliSense when being accepted,
-            // the `command`-property is set which the editor will execute after 
-            // completion has been inserted. Also, the `insertText` is set so that 
-            // a space is inserted after `new`
-            const commandCompletion = new vscode.CompletionItem('new');
-            commandCompletion.kind = vscode.CompletionItemKind.Keyword;
-            commandCompletion.insertText = 'new ';
-            commandCompletion.command = { command: 'editor.action.triggerSuggest', title: 'Re-trigger completions...' };
-            // return all completion items as array
-            return [
-               
-                commitCharacterCompletion,
-                commandCompletion
-            ];
-        }
+		provideCompletionItems(document, position, token, context) {
+
+			const commitCharacterCompletion = new vscode.CompletionItem("on(");
+			commitCharacterCompletion.commitCharacters = ["'"];
+			commitCharacterCompletion.documentation = new vscode.MarkdownString("Press `'` to get `lol`");
+			// a completion item that retriggers IntelliSense when being accepted,
+			// the `command`-property is set which the editor will execute after 
+			// completion has been inserted. Also, the `insertText` is set so that 
+			// a space is inserted after `new`
+			const commandCompletion = new vscode.CompletionItem('new');
+			commandCompletion.kind = vscode.CompletionItemKind.Keyword;
+			commandCompletion.insertText = 'new ';
+			commandCompletion.command = {
+				command: 'editor.action.triggerSuggest',
+				title: 'Re-trigger completions...'
+			};
+			// return all completion items as array
+			return [
+
+				commitCharacterCompletion,
+				commandCompletion
+			];
+		}
 	});
 
 	//trigger them here?
-    const provider2 = vscode.languages.registerCompletionItemProvider('javascript', {
-        provideCompletionItems(document, position) {
-            // get all text until the `position` and check if it reads `console.`
-            // and if so then complete if `log`, `warn`, and `error`
-            let linePrefix = document.lineAt(position).text.substr(0, position.character);
-            if (!linePrefix.endsWith("on('")) {
-                return undefined;
-            }
-            return CompletionItems;
-        }
-    }, "'"); // triggered whenever a '.' is being typed
+	var provider2 = vscode.languages.registerCompletionItemProvider('javascript', {
+		provideCompletionItems(document, position) {
+			// get all text until the `position` and check if it reads `console.`
+			// and if so then complete if `log`, `warn`, and `error`
+			let linePrefix = document.lineAt(position).text.substr(0, position.character);
 
-	context.subscriptions.push(provider1, provider2, disposable); 
+			if (!linePrefix.endsWith("on(" + quoteMark)) {
+				return undefined;
+			}
+			return CompletionItems;
+		}
+	}, quoteMark); // triggered whenever a '.' is being typed
+
+	var quoteMark = '"';
+
+	vscode.workspace.onDidChangeTextDocument(changeEvent => {
+		var textRecord = changeEvent.contentChanges[0].text;
+
+		console.log(textRecord);
+
+		if ((textRecord == "'") || (textRecord == '"')) {
+			quoteMark = textRecord;
+		}
+	});
+
+	context.subscriptions.push(provider1, provider2, disposable);
 }
 exports.activate = activate;
 
