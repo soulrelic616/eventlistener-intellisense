@@ -162,12 +162,7 @@ function activate(context) {
             if (!linePrefix.endsWith("on('")) {
                 return undefined;
             }
-            return [
-                /* new vscode.CompletionItem('log', vscode.CompletionItemKind.Class),
-                new vscode.CompletionItem('warn', vscode.CompletionItemKind.Class),
-				new vscode.CompletionItem('error', vscode.CompletionItemKind.Class), */
-				CompletionItem
-            ];
+            return CompletionItems;
         }
     }, "'"); // triggered whenever a '.' is being typed
 
