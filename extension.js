@@ -9,7 +9,7 @@ const vscode = require('vscode');
  * @param {vscode.ExtensionContext} context
  */
 
-var quoteMark;
+
 
 function activate(context) {
 
@@ -119,7 +119,7 @@ function activate(context) {
 
 	loopListeners();
 
-	var quoteMark = "'";
+	var quoteMarks = ["'","\""];
 
 	/* vscode.workspace.onDidChangeTextDocument(changeEvent => {
 		var textRecord = changeEvent.contentChanges[0].text;
@@ -180,17 +180,29 @@ function activate(context) {
 		provideCompletionItems(document, position) {
 			// get all text until the `position` and check if it reads `console.`
 			// and if so then complete if `log`, `warn`, and `error`
-			let linePrefix = document.lineAt(position).text.substr(0, position.character);
-			if (!linePrefix.endsWith(".on(" + quoteMark)) {
-				return undefined;
-			}
+			triggerSuggestion(document,position, quoteMarks[0]);
 			return CompletionItems;
 		}
-	}, quoteMark); // triggered whenever a '.' is being typed
+	}, quoteMarks[0]); // triggered whenever a '.' is being typed
 
-	
+	//trigger them here?
+	var provider3 = vscode.languages.registerCompletionItemProvider('javascript', {
+		provideCompletionItems(document, position) {
+			// get all text until the `position` and check if it reads `console.`
+			// and if so then complete if `log`, `warn`, and `error`
+			triggerSuggestion(document,position, quoteMarks[1]);
+			return CompletionItems;
+		}
+	}, quoteMarks[1]); // triggered whenever a '.' is being typed
 
-	context.subscriptions.push(provider1, provider2, disposable);
+	function triggerSuggestion(document, position, quoteMark) {
+		let linePrefix = document.lineAt(position).text.substr(0, position.character);
+		if (!linePrefix.endsWith(".on(" + quoteMark)) {
+			return undefined;
+		}
+	}
+
+	context.subscriptions.push(provider1, provider2, provider3, disposable);
 }
 exports.activate = activate;
 
