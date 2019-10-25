@@ -8,6 +8,9 @@ const vscode = require('vscode');
 /**
  * @param {vscode.ExtensionContext} context
  */
+
+var quoteMark;
+
 function activate(context) {
 
 	let eventListeners = [
@@ -116,6 +119,19 @@ function activate(context) {
 
 	loopListeners();
 
+	var quoteMark = "'";
+
+	/* vscode.workspace.onDidChangeTextDocument(changeEvent => {
+		var textRecord = changeEvent.contentChanges[0].text;
+
+		//console.log(textRecord);
+
+		if ((textRecord == "'") || (textRecord == '"')) {
+			quoteMark = textRecord;
+		}
+		console.log(quoteMark);
+		return quoteMark;
+	}); */
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
@@ -165,25 +181,14 @@ function activate(context) {
 			// get all text until the `position` and check if it reads `console.`
 			// and if so then complete if `log`, `warn`, and `error`
 			let linePrefix = document.lineAt(position).text.substr(0, position.character);
-
-			if (!linePrefix.endsWith("on(" + quoteMark)) {
+			if (!linePrefix.endsWith(".on(" + quoteMark)) {
 				return undefined;
 			}
 			return CompletionItems;
 		}
 	}, quoteMark); // triggered whenever a '.' is being typed
 
-	var quoteMark = '"';
-
-	vscode.workspace.onDidChangeTextDocument(changeEvent => {
-		var textRecord = changeEvent.contentChanges[0].text;
-
-		console.log(textRecord);
-
-		if ((textRecord == "'") || (textRecord == '"')) {
-			quoteMark = textRecord;
-		}
-	});
+	
 
 	context.subscriptions.push(provider1, provider2, disposable);
 }
