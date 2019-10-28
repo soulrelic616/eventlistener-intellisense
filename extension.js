@@ -14,7 +14,6 @@ const vscode = require('vscode');
 function activate(context) {
 
 	let eventListeners = [
-		"Event",
 		"abort",
 		"afterprint",
 		"animationend",
@@ -112,26 +111,26 @@ function activate(context) {
 			//console.log(item);
 			CompletionItem = new vscode.CompletionItem(item, vscode.CompletionItemKind.Event);
 			CompletionItems.push(CompletionItem);
-
-			//console.log(CompletionItems)
 		});
 	}
 
 	loopListeners();
 
-	var quoteMarks = ["'","\""];
+	var quoteMarks = ["'", "\""];
 
-	/* vscode.workspace.onDidChangeTextDocument(changeEvent => {
-		var textRecord = changeEvent.contentChanges[0].text;
+	
+	var langType = ['javascript', 'html'];
 
-		//console.log(textRecord);
+	console.log(vscode.window.activeTextEditor.document.languageId);
 
-		if ((textRecord == "'") || (textRecord == '"')) {
-			quoteMark = textRecord;
-		}
-		console.log(quoteMark);
-		return quoteMark;
-	}); */
+	vscode.window.onDidChangeActiveTextEditor(event => {
+		//console.log(`Did change: ${event.document.uri}`);
+		//console.log(event.document.languageId);
+		//langType = event.document.languageId;
+		//initializeFn(langType);
+
+		console.log(vscode.window.activeTextEditor.document.languageId);
+	});
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
@@ -147,62 +146,70 @@ function activate(context) {
 		vscode.window.showInformationMessage('Hello World!');
 	});
 
-	//Maybe list classes in array here?
-	let provider1 = vscode.languages.registerCompletionItemProvider('javascript', {
+//Maybe list classes in array here?
+		var provider1 = vscode.languages.registerCompletionItemProvider(langType, {
 
-		provideCompletionItems(document, position, token, context) {
+			provideCompletionItems(document, position, token, context) {
 
-			const commitCharacterCompletion = new vscode.CompletionItem("on(");
-			commitCharacterCompletion.commitCharacters = ["'"];
-			commitCharacterCompletion.documentation = new vscode.MarkdownString("Press `'` to get `lol`");
-			// a completion item that retriggers IntelliSense when being accepted,
-			// the `command`-property is set which the editor will execute after 
-			// completion has been inserted. Also, the `insertText` is set so that 
-			// a space is inserted after `new`
-			const commandCompletion = new vscode.CompletionItem('new');
-			commandCompletion.kind = vscode.CompletionItemKind.Keyword;
-			commandCompletion.insertText = 'new ';
-			commandCompletion.command = {
-				command: 'editor.action.triggerSuggest',
-				title: 'Re-trigger completions...'
-			};
-			// return all completion items as array
-			return [
+				const commitCharacterCompletion = new vscode.CompletionItem(".on(");
+				commitCharacterCompletion.commitCharacters = ["'"];
+				commitCharacterCompletion.documentation = new vscode.MarkdownString("Press `'` or `'` to get `Event listener suggestions`");
+				// a completion item that retriggers IntelliSense when being accepted,
+				// the `command`-property is set which the editor will execute after 
+				// completion has been inserted. Also, the `insertText` is set so that 
+				// a space is inserted after `new`
+				const commandCompletion = new vscode.CompletionItem('new');
+				commandCompletion.kind = vscode.CompletionItemKind.Keyword;
+				commandCompletion.insertText = 'new ';
+				commandCompletion.command = {
+					command: 'editor.action.triggerSuggest',
+					title: 'Re-trigger completions...'
+				};
+				// return all completion items as array
+				return [
 
-				commitCharacterCompletion,
-				commandCompletion
-			];
+					commitCharacterCompletion,
+					commandCompletion
+				];
+			}
+		});
+
+		//trigger them here?
+		var provider2 = vscode.languages.registerCompletionItemProvider(langType, {
+			provideCompletionItems(document, position) {
+				// get all text until the `position` and check if it reads `console.`
+				// and if so then complete if `log`, `warn`, and `error`
+				triggerSuggestion(document, position, quoteMarks[0]);
+				return CompletionItems;
+			}
+		}, quoteMarks[0]); // triggered whenever a '.' is being typed
+
+		//trigger them here?
+		var provider3 = vscode.languages.registerCompletionItemProvider(langType, {
+			provideCompletionItems(document, position) {
+				// get all text until the `position` and check if it reads `console.`
+				// and if so then complete if `log`, `warn`, and `error`
+				triggerSuggestion(document, position, quoteMarks[1]);
+				return CompletionItems;
+			}
+		}, quoteMarks[1]); // triggered whenever a '.' is being typed
+
+
+
+		function triggerSuggestion(document, position, quoteMark) {
+			let linePrefix = document.lineAt(position).text.substr(0, position.character);
+			if (!linePrefix.endsWith(".on(" + quoteMark)) {
+				return undefined;
+			}
 		}
-	});
+		context.subscriptions.push(provider1, provider2, provider3, disposable);
 
-	//trigger them here?
-	var provider2 = vscode.languages.registerCompletionItemProvider('javascript', {
-		provideCompletionItems(document, position) {
-			// get all text until the `position` and check if it reads `console.`
-			// and if so then complete if `log`, `warn`, and `error`
-			triggerSuggestion(document,position, quoteMarks[0]);
-			return CompletionItems;
-		}
-	}, quoteMarks[0]); // triggered whenever a '.' is being typed
 
-	//trigger them here?
-	var provider3 = vscode.languages.registerCompletionItemProvider('javascript', {
-		provideCompletionItems(document, position) {
-			// get all text until the `position` and check if it reads `console.`
-			// and if so then complete if `log`, `warn`, and `error`
-			triggerSuggestion(document,position, quoteMarks[1]);
-			return CompletionItems;
-		}
-	}, quoteMarks[1]); // triggered whenever a '.' is being typed
-
-	function triggerSuggestion(document, position, quoteMark) {
-		let linePrefix = document.lineAt(position).text.substr(0, position.character);
-		if (!linePrefix.endsWith(".on(" + quoteMark)) {
-			return undefined;
-		}
+	function initializeFn() {
+		return langType;
 	}
+	initializeFn();
 
-	context.subscriptions.push(provider1, provider2, provider3, disposable);
 }
 exports.activate = activate;
 
