@@ -1,6 +1,6 @@
 # eventlistener-intellisense README
 
-This is the README for your extension "eventlistener-intellisense". After writing up a brief description, we recommend including the following sections.
+Event-listener intellisense provides a small yet useful list of event listeners for JS and JQquery.
 
 ## Features
 

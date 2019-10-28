@@ -116,47 +116,22 @@ function activate(context) {
 
 	loopListeners();
 
-	var quoteMarks = ["'", "\""];
-
-	
+	var quoteMarks = ["'", "\""];	
 	var langType = ['javascript', 'html', 'php'];
 
-	console.log(vscode.window.activeTextEditor.document.languageId);
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "eventlistener-intellisense" is now active!');
+	console.log('Extension "eventlistener-intellisense" is now active!');
 
-//Maybe list classes in array here?
-		var provider1 = vscode.languages.registerCompletionItemProvider(langType, {
-
-			provideCompletionItems(document, position, token, context) {
-
-				const commitCharacterCompletion = new vscode.CompletionItem(".on(");
-				commitCharacterCompletion.commitCharacters = ["'"];
-				commitCharacterCompletion.documentation = new vscode.MarkdownString("Press single or double quotes to get `Event listener suggestions`");
-				// a completion item that retriggers IntelliSense when being accepted,
-				// the `command`-property is set which the editor will execute after 
-				// completion has been inserted. Also, the `insertText` is set so that 
-				// a space is inserted after `new`
-				const commandCompletion = new vscode.CompletionItem('new');
-				commandCompletion.kind = vscode.CompletionItemKind.Keyword;
-				commandCompletion.insertText = 'new ';
-				commandCompletion.command = {
-					command: 'editor.action.triggerSuggest',
-					title: 'Re-trigger completions...'
-				};
-				// return all completion items as array
-				return [
-
-					commitCharacterCompletion,
-					commandCompletion
-				];
-			}
-		});
+	//MAIN FN
+	function triggerSuggestion(document, position, quoteMark) {
+		let linePrefix = document.lineAt(position).text.substr(0, position.character);
+		if (!linePrefix.endsWith(".on(" + quoteMark)) {
+			return undefined;
+		}
+	}
 
 		//trigger them here?
-		var provider2 = vscode.languages.registerCompletionItemProvider(langType, {
+		var snlQuote = vscode.languages.registerCompletionItemProvider(langType, {
 			provideCompletionItems(document, position) {
 				triggerSuggestion(document, position, quoteMarks[0]);
 				return CompletionItems;
@@ -164,20 +139,14 @@ function activate(context) {
 		}, quoteMarks[0]);
 
 		//trigger them here?
-		var provider3 = vscode.languages.registerCompletionItemProvider(langType, {
+		var dblQuote = vscode.languages.registerCompletionItemProvider(langType, {
 			provideCompletionItems(document, position) {
 				triggerSuggestion(document, position, quoteMarks[1]);
 				return CompletionItems;
 			}
 		}, quoteMarks[1]);
 
-		function triggerSuggestion(document, position, quoteMark) {
-			let linePrefix = document.lineAt(position).text.substr(0, position.character);
-			if (!linePrefix.endsWith(".on(" + quoteMark)) {
-				return undefined;
-			}
-		}
-		context.subscriptions.push(provider1, provider2, provider3);
+		context.subscriptions.push(snlQuote, dblQuote);
 }
 
 exports.activate = activate;
