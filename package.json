@@ -11,6 +11,7 @@
 	],
 	"activationEvents": [
 		"onLanguage:javascript",
+		"onLanguage:php",
 		"onLanguage:html"
 	],
 	"main": "./extension.js",

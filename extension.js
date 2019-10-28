@@ -119,32 +119,13 @@ function activate(context) {
 	var quoteMarks = ["'", "\""];
 
 	
-	var langType = ['javascript', 'html'];
+	var langType = ['javascript', 'html', 'php'];
 
 	console.log(vscode.window.activeTextEditor.document.languageId);
-
-	vscode.window.onDidChangeActiveTextEditor(event => {
-		//console.log(`Did change: ${event.document.uri}`);
-		//console.log(event.document.languageId);
-		//langType = event.document.languageId;
-		//initializeFn(langType);
-
-		console.log(vscode.window.activeTextEditor.document.languageId);
-	});
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "eventlistener-intellisense" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('extension.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
-
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World!');
-	});
 
 //Maybe list classes in array here?
 		var provider1 = vscode.languages.registerCompletionItemProvider(langType, {
@@ -153,7 +134,7 @@ function activate(context) {
 
 				const commitCharacterCompletion = new vscode.CompletionItem(".on(");
 				commitCharacterCompletion.commitCharacters = ["'"];
-				commitCharacterCompletion.documentation = new vscode.MarkdownString("Press `'` or `'` to get `Event listener suggestions`");
+				commitCharacterCompletion.documentation = new vscode.MarkdownString("Press single or double quotes to get `Event listener suggestions`");
 				// a completion item that retriggers IntelliSense when being accepted,
 				// the `command`-property is set which the editor will execute after 
 				// completion has been inserted. Also, the `insertText` is set so that 
@@ -177,24 +158,18 @@ function activate(context) {
 		//trigger them here?
 		var provider2 = vscode.languages.registerCompletionItemProvider(langType, {
 			provideCompletionItems(document, position) {
-				// get all text until the `position` and check if it reads `console.`
-				// and if so then complete if `log`, `warn`, and `error`
 				triggerSuggestion(document, position, quoteMarks[0]);
 				return CompletionItems;
 			}
-		}, quoteMarks[0]); // triggered whenever a '.' is being typed
+		}, quoteMarks[0]);
 
 		//trigger them here?
 		var provider3 = vscode.languages.registerCompletionItemProvider(langType, {
 			provideCompletionItems(document, position) {
-				// get all text until the `position` and check if it reads `console.`
-				// and if so then complete if `log`, `warn`, and `error`
 				triggerSuggestion(document, position, quoteMarks[1]);
 				return CompletionItems;
 			}
-		}, quoteMarks[1]); // triggered whenever a '.' is being typed
-
-
+		}, quoteMarks[1]);
 
 		function triggerSuggestion(document, position, quoteMark) {
 			let linePrefix = document.lineAt(position).text.substr(0, position.character);
@@ -202,15 +177,9 @@ function activate(context) {
 				return undefined;
 			}
 		}
-		context.subscriptions.push(provider1, provider2, provider3, disposable);
-
-
-	function initializeFn() {
-		return langType;
-	}
-	initializeFn();
-
+		context.subscriptions.push(provider1, provider2, provider3);
 }
+
 exports.activate = activate;
 
 // this method is called when your extension is deactivated
