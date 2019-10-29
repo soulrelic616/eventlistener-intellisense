@@ -16,20 +16,21 @@
 	"categories": [ 
 		"Other"
 	],
+	"keywords": [
+		"intellisense",
+		"eventlistener",
+		"jquery",
+		"event",
+		"listener"
+	],
+	"icon": "icon.png",
+	"publisher": "fatalDesign",
 	"activationEvents": [
 		"onLanguage:javascript",
 		"onLanguage:php",
 		"onLanguage:html"
 	],
 	"main": "./extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "extension.helloWorld",
-				"title": "test"
-			}
-		]
-	},
 	"capabilities": {
 		"completionProvider": {
 			"resolveProvider": "true",
@@ -52,5 +53,7 @@
 		"typescript": "^3.3.1",
 		"vscode-test": "^1.2.0"
 	},
-	"dependencies": {}
+	"__metadata": {
+		"publisherDisplayName": "Bernardo Baldiviezo"
+	}
 }
