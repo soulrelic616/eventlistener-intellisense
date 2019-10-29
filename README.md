@@ -28,4 +28,8 @@ Initial release
 ### 0.0.2
 
 Updates demo screen image
+
+### 0.0.3
+
+Minor changes to README.MD
  
