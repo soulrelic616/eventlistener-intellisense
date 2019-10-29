@@ -6,6 +6,13 @@
 	"engines": {
 		"vscode": "^1.36.0"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/soulrelic616/eventlistener-intellisense"
+	},
+	"bugs": {
+		"url": "https://github.com/soulrelic616/eventlistener-intellisense/issues"
+	},
 	"categories": [
 		"Other"
 	],
