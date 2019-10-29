@@ -24,3 +24,7 @@ MIT, please see LICENSE for details. Copyright (c) 2019 Bernardo Baldiviezo.
 ### 0.0.1
 
 Initial release
+
+### 0.0.2
+
+Updates demo screen image
