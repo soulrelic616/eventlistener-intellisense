@@ -2,7 +2,7 @@
 	"name": "eventlistener-intellisense",
 	"displayName": "Eventlistener Intellisense",
 	"description": "Intellisense for JS Event Listeners",
-	"version": "0.0.3",
+	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.36.0"
 	},
