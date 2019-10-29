@@ -12,7 +12,7 @@ Type  '.on(' in any JS supported document to get a list of events to listen for.
 In Visual Studio Code, run `ext install eventlistener-intellisense` - or, simply hit `CMD/CTRL + Shift + P`, search for "Install Extension", and then search for "Eventlistener Intellisense".
 
 ## Contributions
-Contributions are welcome, especially support for more languages and keywords. https://github.com/soulrelic616/theme-hammsidian
+Contributions are welcome, especially support for more languages and keywords. https://github.com/soulrelic616/eventlistener-intellisense
 
 ## License
 MIT, please see LICENSE for details. Copyright (c) 2019 Bernardo Baldiviezo.
@@ -28,3 +28,4 @@ Initial release
 ### 0.0.2
 
 Updates demo screen image
+ 
