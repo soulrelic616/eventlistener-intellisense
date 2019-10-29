@@ -98,7 +98,7 @@ function activate(context) {
 		"unload",
 		"volumechange",
 		"waiting",
-		"wheel",
+		"wheel"
 	];
 
 	var CompletionItems = [];

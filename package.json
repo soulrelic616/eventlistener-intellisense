@@ -23,11 +23,13 @@
 			}
 		]
 	},
-	"capabilities" : {
-        "completionProvider" : {
-            "resolveProvider": "true",
-            "triggerCharacters": [ "." ]
-        }
+	"capabilities": {
+		"completionProvider": {
+			"resolveProvider": "true",
+			"triggerCharacters": [
+				"."
+			]
+		}
 	},
 	"scripts": {
 		"test": "node ./test/runTest.js"
@@ -42,5 +44,6 @@
 		"mocha": "^6.1.4",
 		"typescript": "^3.3.1",
 		"vscode-test": "^1.2.0"
-	}
+	},
+	"dependencies": {}
 }
