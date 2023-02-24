@@ -9,8 +9,6 @@ const vscode = require('vscode');
  * @param {vscode.ExtensionContext} context
  */
 
-
-
 function activate(context) {
 
 	let eventListeners = [
@@ -116,37 +114,37 @@ function activate(context) {
 
 	loopListeners();
 
-	var quoteMarks = ["'", "\""];	
+	var quoteMarks = ["'", "\""];
+	var initialiser = [".on(", ".addEventListener("]
 	var langType = ['javascript', 'html', 'php'];
 
 	// This line of code will only be executed once when your extension is activated
 	console.log('Extension "eventlistener-intellisense" is now active!');
 
-	//MAIN FN
 	function triggerSuggestion(document, position, quoteMark) {
 		let linePrefix = document.lineAt(position).text.substr(0, position.character);
-		if (!linePrefix.endsWith(".on(" + quoteMark)) {
-			return undefined;
-		}
+		initialiser.forEach(function (item) {
+			var elem = item;
+			if (!linePrefix.endsWith(item + quoteMark)) {
+				return undefined;
+			}
+		});
 	}
 
-		//trigger them here?
-		var snlQuote = vscode.languages.registerCompletionItemProvider(langType, {
+	//trigger suggestions in loops
+	var iterations = [];
+
+	quoteMarks.forEach(function (item, index) {
+		console.log(index);
+		iterations[index] = vscode.languages.registerCompletionItemProvider(langType, {
 			provideCompletionItems(document, position) {
-				triggerSuggestion(document, position, quoteMarks[0]);
+				triggerSuggestion(document, position, quoteMarks[index]);
 				return CompletionItems;
 			}
-		}, quoteMarks[0]);
+		}, quoteMarks[index]);
 
-		//trigger them here?
-		var dblQuote = vscode.languages.registerCompletionItemProvider(langType, {
-			provideCompletionItems(document, position) {
-				triggerSuggestion(document, position, quoteMarks[1]);
-				return CompletionItems;
-			}
-		}, quoteMarks[1]);
-
-		context.subscriptions.push(snlQuote, dblQuote);
+		context.subscriptions.push(iterations[index]);
+	});	
 }
 
 exports.activate = activate;

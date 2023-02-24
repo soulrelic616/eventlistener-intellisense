@@ -15,7 +15,7 @@ In Visual Studio Code, run `ext install eventlistener-intellisense` - or, simply
 Contributions are welcome, especially support for more languages and keywords. https://github.com/soulrelic616/eventlistener-intellisense
 
 ## License
-MIT, please see LICENSE for details. Copyright (c) 2019 Bernardo Baldiviezo.
+MIT, please see LICENSE for details. Copyright (c) 2023 Bernardo Baldiviezo.
 
 
 ## Releases
@@ -24,4 +24,8 @@ MIT, please see LICENSE for details. Copyright (c) 2019 Bernardo Baldiviezo.
 ### 0.0.1
 
 Initial release
+ 
+ ### 0.0.2
+
+Adds native Javascript support for .addEventListener
  
